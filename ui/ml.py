@@ -66,4 +66,9 @@ def predict_new_customer():
             st.write("이 고객은 중장년층으로, 새로운 제품보다는 익숙한 제품을 선호합니다.")
             st.write("마케팅 전략 : 신뢰 기반 마케팅, 기존 제품 중심 전략")
 
+        # 새로운 고객 데이터를 CSV 파일에 저장
+        input_data['Cluster'] = cluster
+        input_data.to_csv('data/customer_data3.csv', mode='a', header=False, index=False)
+        st.success("고객 데이터가 성공적으로 저장되었습니다.")
+
         

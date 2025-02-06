@@ -18,6 +18,8 @@ cluster_descriptions = {
 
 def predict_new_customer():
     st.title("고객 관리")
+
+    st.info('고객 정보를 입력하세요.')
     
     age = st.number_input("나이", min_value=0, max_value=120)
     purchase_amount = st.number_input("구매 금액 (USD)", min_value=0)

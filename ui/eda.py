@@ -6,6 +6,8 @@ import plotly.express as px
 
 def analyze_customers():
     st.title("고객 데이터 분석")
+
+    st.info('고객을 분류별로 분석합니다.')
     
     uploaded_file = st.file_uploader("고객 데이터 CSV 파일을 업로드하세요", type="csv")
     if uploaded_file is not None:

@@ -3,8 +3,23 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
+import os
+import matplotlib.font_manager as fm
+
+@st.cache_data
+def fontRegistered():
+    font_dirs = [os.getcwd() + '/custom_fonts']
+    font_files = fm.findSystemFonts(fontpaths=font_dirs)
+    for font_file in font_files:
+        fm.fontManager.addfont(font_file)
+    fm._load_fontmanager(try_read_cache=False)
+
 
 def analyze_customers():
+    fontRegistered()
+    plt.rc('font', family='NanumGothic')
+
+
     st.title("고객 데이터 분석")
 
     st.info('고객을 분류별로 분석합니다.')

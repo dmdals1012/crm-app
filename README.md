@@ -193,7 +193,7 @@ rf_pred = random_forest_pipeline.predict(X_test)
 xgb_pred = xgboost_pipeline.predict(X_test)
 ```
 
-
+### ✅테스트 결과
 !['테스트 결과'](image/test.png)
 
 

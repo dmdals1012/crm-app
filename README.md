@@ -144,7 +144,9 @@ pipeline.set_params(kmeans__n_clusters=optimal_clusters)
 df['Cluster'] = pipeline.fit_predict(X)
 
 ```
-- 최적의 클러스터 수는 처음엔 7개를 지정했지만 특정 클러수터의 수가 적어 이후 6개로 다시 지정하여 학습하였습니다.
+### ✅엘보우 메소드
+!['엘보우 메소드'](image/elbow.png)
+- 최적의 클러스터 수는 처음엔 7개를 지정했지만 특정 클러스터의 수가 적어 이후 6개로 다시 지정하여 학습하였습니다.
 
 
 
@@ -155,7 +157,7 @@ df['Cluster'] = pipeline.fit_predict(X)
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
-# 데이터 전처리 준비
+# 데이터 전처리
 numeric_features2 = ['Age', 'Purchase Amount (USD)', 'Review Rating', 'Previous Purchases']
 categorical_features2 = ['Category', 'Color', 'Season', 'Frequency of Purchases']
 X2 = df[numeric_features2 + categorical_features2]

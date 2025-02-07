@@ -57,7 +57,28 @@ def development_process():
     # K-means 클러스터링
     kmeans = KMeans(n_clusters=5, random_state=42)
     df['cluster'] = kmeans.fit_predict(X_scaled)
+            
+    # LogisticRegression
+    lr_model = LogisticRegression()
+    lr_model.fit(X_train, y_train)
+    lr_pred = lr_model.predict(X_test)
+    print("Logistic Regression Accuracy:", accuracy_score(y_test, lr_pred))
+
+    # RandomForestClassifier
+    rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
+    rf_model.fit(X_train, y_train)
+    rf_pred = rf_model.predict(X_test)
+    print("Random Forest Accuracy:", accuracy_score(y_test, rf_pred))
+
+    # XGBClassifier
+    xgb_model = XGBClassifier(n_estimators=100, random_state=42)
+    xgb_model.fit(X_train, y_train)
+    xgb_pred = xgb_model.predict(X_test)
+    print("XGBoost Accuracy:", accuracy_score(y_test, xgb_pred))
     """)
+
+    st.write('고객 유형 분류는 K-Means를 사용하였습니다.') 
+    st.write('고객 유형 예측은 LogisticRegression, RandomForestClassifier, XGBClassifier 중 LogisticRegression이 97%의 적중률을 보여주어 채용했습니다.')
 
     st.header("5. Streamlit 앱 개발")
     st.write("""

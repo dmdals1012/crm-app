@@ -45,6 +45,7 @@ def app_description():
     
     st.markdown("### 2. 데이터 분석 📊")
     st.markdown("다양한 시각화 기법을 통해 고객 데이터에서 유용한 인사이트를 도출합니다.")
+    st.markdown("추가적으로 필요한 분석이 있다면 추가하겠습니다.")
     
     # 데이터 프레임 표시
     data = load_data()  # 데이터 로드

@@ -130,6 +130,14 @@ def calculate_wcss(pipeline, X, max_clusters=10):
 
 wcss = calculate_wcss(pipeline, X)
 
+# 엘보우 곡선 그리기
+plt.figure(figsize=(10, 6))
+plt.plot(range(1, len(wcss) + 1), wcss)
+plt.title('Elbow Method')
+plt.xlabel('Number of clusters')
+plt.ylabel('WCSS')
+plt.show()
+
 # 최적의 클러스터 수 설정 및 클러스터링 수행
 optimal_clusters = 6
 pipeline.set_params(kmeans__n_clusters=optimal_clusters)
@@ -205,10 +213,44 @@ xgb_pred = xgboost_pipeline.predict(X_test)
 ---
 
 
-## 5️⃣ Streamlit 앱 개발 및 배포
+## 5️⃣ Streamlit 앱 개발 및 배포 준비
 1. UI/UX 설계: 사이드바 메뉴 및 페이지 구성
+```python
+import streamlit as st
+
+menu = st.sidebar.selectbox("메뉴 선택", ["홈", "데이터 분석", "시각화"])
+
+if menu == "홈":
+    st.title("홈페이지")
+elif menu == "데이터 분석":
+    st.title("데이터 분석 페이지")
+elif menu == "시각화":
+    st.title("시각화 페이지")
+```
+
+
 2. 데이터 시각화: Plotly 및 Matplotlib 활용한 대시보드 구현
+```python
+import plotly.express as px
+
+df = px.data.iris()
+fig = px.scatter(df, x="sepal_width", y="sepal_length", color="species")
+st.plotly_chart(fig)
+```
+
 3. Streamlit 클라우드에 Python 라이브러리를 설치할 requirements.txt 파일 생성
+```bash
+streamlit
+pandas
+matplotlib
+seaborn
+plotly
+joblib
+scikit-learn
+```
+
+- 위 코드들은 예시이며 실제 코드는 ui 폴더와 app.py 파일을 참조하시면 됩니다.
+
 
 
     
@@ -223,11 +265,12 @@ Streamlit Local 실행 코드 :
 ```bash
 streamlit run app.py
 ```
+디버깅 과정에는 perplexity 및 ChatGPT의 도움을 받아 진행하였습니다.
 
 
 ---
 
-## 5️⃣ Streamlit 앱 개발 및 배포
+
 
 ## 🔄 지속적인 개선 및 유지보수
 피드백 수집 및 반영

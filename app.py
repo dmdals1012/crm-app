@@ -3,6 +3,7 @@ from PIL import Image
 from datetime import datetime, timedelta
 import pandas as pd
 
+from ui.description import app_description
 from ui.eda import analyze_customers
 from ui.home import home_page
 from ui.ml import predict_new_customer
@@ -20,7 +21,7 @@ def sidebar():
     
 
     # 메뉴 선택 (아이콘 포함)
-    menu = ['🏠 홈', '👥 고객 관리', '📊 고객 분석']
+    menu = ['🏠 홈', '📖 앱 소개', '👥 고객 관리', '📊 고객 분석']
     choice = st.sidebar.radio(
         "메뉴 선택",
         menu,
@@ -60,6 +61,8 @@ def main():
 
     if choice == '🏠 홈':
         home_page()
+    elif choice == '📖 앱 소개':
+        app_description()
     elif choice == '👥 고객 관리':
         predict_new_customer()
     elif choice == '📊 고객 분석':

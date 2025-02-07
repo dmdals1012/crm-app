@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 from PIL import Image  # Pillow 라이브러리에서 Image 클래스 import
 
 @st.cache_data

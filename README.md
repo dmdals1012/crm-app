@@ -53,8 +53,8 @@
 - 고객 데이터 분석 및 관리 시스템의 필요성 인식  
 - **주요 기능 정의**  
   - 📊 데이터 분석  
-  - 👥 고객 세그먼테이션  
-  - 🔮 신규 고객 예측  
+  - 👥 고객 분류  
+  - 🔮 고객 유형 예측  
   - 💼 CRM 기능  
 - 사용자 요구사항 수집 및 분석  
 
@@ -205,18 +205,12 @@ xgb_pred = xgboost_pipeline.predict(X_test)
 ---
 
 
-## 5️⃣ Streamlit 앱 개발
-UI/UX 설계: 사이드바 메뉴 및 페이지 구성
-데이터 시각화: Plotly 및 Matplotlib 활용한 대시보드 구현
-python
-복사
-편집
-import streamlit as st
-import plotly.express as px
+## 5️⃣ Streamlit 앱 개발 및 배포
+1. UI/UX 설계: 사이드바 메뉴 및 페이지 구성
+2. 데이터 시각화: Plotly 및 Matplotlib 활용한 대시보드 구현
+3. Streamlit 클라우드에 Python 라이브러리를 설치할 requirements.txt 파일 생성
 
-def analyze_customers():
-    fig = px.box(data, x='Age Group', y='Purchase Amount (USD)', color='Age Group')
-    st.plotly_chart(fig)
+
     
 ---
 
@@ -224,41 +218,16 @@ def analyze_customers():
 ## 6️⃣ 테스트 및 디버깅
 유닛 테스트 및 통합 테스트
 Streamlit의 개발자 모드 활용하여 실시간 디버깅
+Streamlit Local 실행 코드 :
+
+```bash
+streamlit run app.py
+```
+
 
 ---
 
-
-## 7️⃣ 버전 관리 및 협업
-GitHub를 통한 코드 버전 관리 및 협업
-bash
-복사
-편집
-git init
-git add .
-git commit -m "프로젝트 초기 설정 및 데이터 로드"
-git push origin main
-
----
-
-
-## 8️⃣ 배포 준비
-requirements.txt 파일 생성
-bash
-복사
-편집
-pip freeze > requirements.txt
-Docker 환경 설정 (옵션)
-
----
-
-
-## 9️⃣ Streamlit Cloud 배포
-Streamlit Cloud 계정 생성 및 GitHub 연동
-자동 배포 설정
-URL 배포 주소: https://share.streamlit.io/사용자명/CRM-app/main/app.py
-
----
-
+## 5️⃣ Streamlit 앱 개발 및 배포
 
 ## 🔄 지속적인 개선 및 유지보수
 피드백 수집 및 반영

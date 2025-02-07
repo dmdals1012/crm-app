@@ -32,21 +32,23 @@ def analyze_customers():
     fig.update_layout(xaxis_title='평균 구매 금액 (USD)', yaxis_title='평균 리뷰 평점')
     st.plotly_chart(fig)
 
+    valid_categories = ['Clothing', 'Accessories', 'Footwear', 'Outerwear']
+    valid_seasons = ['Spring', 'Summer', 'Fall', 'Winter']
+
     # 3. 카테고리별 평균 구매 금액 막대 그래프
     st.subheader("카테고리별 평균 구매 금액")
-    category_avg = data.groupby('Category')['Purchase Amount (USD)'].mean().sort_values(ascending=False)
+    category_avg = data[data['Category'].isin(valid_categories)].groupby('Category')['Purchase Amount (USD)'].mean().sort_values(ascending=False)
     fig = px.bar(category_avg, x=category_avg.index, y=category_avg.values)
     fig.update_layout(xaxis_title='카테고리', yaxis_title='평균 구매 금액 (USD)')
     st.plotly_chart(fig)
 
     # 4. 계절별 구매 패턴 막대 그래프
     st.subheader("계절별 구매 패턴")
-    season_category = pd.crosstab(data['Season'], data['Category'])
+    filtered_data = data[data['Season'].isin(valid_seasons) & data['Category'].isin(valid_categories)]
+    season_category = pd.crosstab(filtered_data['Season'], filtered_data['Category'])
     fig = go.Figure()
-    for category in season_category.columns:
-        fig.add_trace(go.Bar(x=season_category.index, y=season_category[category], name=category))
+    for category in valid_categories:
+        if category in season_category.columns:
+            fig.add_trace(go.Bar(x=valid_seasons, y=[season_category.loc[season, category] if season in season_category.index else 0 for season in valid_seasons], name=category))
     fig.update_layout(barmode='stack', xaxis_title='계절', yaxis_title='구매 횟수')
     st.plotly_chart(fig)
-
-if __name__ == "__main__":
-    analyze_customers()

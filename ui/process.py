@@ -25,33 +25,35 @@ def development_process():
     st.write("""
     - Kaggle에서 고객 쇼핑 데이터셋 다운로드
     - pandas를 사용한 데이터 로드 및 전처리
-    - 결측치 처리, 이상치 제거, 피처 엔지니어링 수행
+    - 결측치 처리, 이상치 제거, 피처 스케일링(StandardScaler 사용) 수행
     """)
     st.code("""
     import pandas as pd
+    from sklearn.preprocessing import StandardScaler
 
     # 데이터 로드
     df = pd.read_csv('customer_shopping_data.csv')
 
     # 데이터 전처리 예시
+            
     df['purchase_date'] = pd.to_datetime(df['purchase_date'])
     df['total_amount'] = df['quantity'] * df['price']
+            
+    # 데이터 스케일링
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(df[['total_amount', 'quantity']])
     """)
+    
 
     st.header("4. 데이터 분석 및 모델링")
     st.write("""
     - 탐색적 데이터 분석 (EDA) 수행
     - 고객 세그먼테이션을 위한 K-means 클러스터링 모델 개발
-    - 신규 고객 예측을 위한 분류 모델 개발 (예: 랜덤 포레스트)
+    - 신규 고객 예측을 위한 분류 모델 개발 (예: RandomForest)
     """)
     st.code("""
     from sklearn.cluster import KMeans
-    from sklearn.preprocessing import StandardScaler
-
-    # 데이터 스케일링
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(df[['total_amount', 'quantity']])
-
+    
     # K-means 클러스터링
     kmeans = KMeans(n_clusters=5, random_state=42)
     df['cluster'] = kmeans.fit_predict(X_scaled)

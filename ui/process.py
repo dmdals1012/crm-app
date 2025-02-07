@@ -87,5 +87,9 @@ def development_process():
 
     st.success("이상으로 고객 분석 및 관리 시스템의 개발 및 배포 과정을 설명하였습니다. 자세한 코드와 설명은 GitHub 저장소의 README.md를 참조해 주세요.")
 
+    st.write("## 개발자가 궁금하시다면?")
+    st.write("- 이메일: dmdals1012@gmail.com")
+    st.write("- GitHub: https://github.com/dmdals1012/customer-app.git")
+
 # 메인 앱에서 이 함수를 호출하여 새 페이지로 추가할 수 있습니다.
 # development_process()

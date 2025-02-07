@@ -94,7 +94,7 @@ categorical_features = ['Category', 'Color', 'Season', 'Frequency of Purchases']
 
 ## 4️⃣ 데이터 전처리와 분석 및 모델링 그리고 테스트
 머신러닝 모델 훈련 및 평가
-1. Clustering : K-Means
+### 1. Clustering : K-Means
 예측 모델: Scikit-learn 기반 고객 그룹 예측
 ```python
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
@@ -140,7 +140,7 @@ df['Cluster'] = pipeline.fit_predict(X)
 
 
 
-2. Classfication : LogisticRegression, RandomForestClassifier, XGBClassifier
+### 2. Classfication : LogisticRegression, RandomForestClassifier, XGBClassifier
 예측 모델: Scikit-learn 기반 고객 그룹 예측
 
 ```python

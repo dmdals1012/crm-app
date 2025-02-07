@@ -61,26 +61,30 @@
 ---
 
 ## 2️⃣ 개발 환경 설정  
-- **가상 환경 생성 및 필수 라이브러리 설치**  
+- **필수 라이브러리 설치**  
 ```bash
-python -m venv customer_app_env
-source customer_app_env/bin/activate  # Windows: customer_app_env\Scripts\activate
-pip install -r requirements.txt 
+pip install streamlit pandas numpy matplotlib seaborn scikit-learn plotly xgboost
+
 ```
 
 
 ---
 
 
-## 3️⃣ 데이터 수집 및 전처리  
+## 3️⃣ 데이터 수집 및 전처리 준비  
 - **데이터 소스 준비**: Kaggle에서 `shopping_trends.csv` 다운로드  
 - **데이터 로드 및 클렌징**  
 
 ```python
+
 import pandas as pd
 
-data = pd.read_csv('data/customer_data3.csv')
-data['Previous Purchases'] = pd.to_numeric(data['Previous Purchases'], errors='coerce')
+df = pd.read_csv('data/shopping_trends.csv')
+
+# 머신러닝을 위해 필요한 컬럼만 선별 하여 전처리 준비
+numeric_features = ['Age', 'Purchase Amount (USD)', 'Review Rating', 'Previous Purchases'] # 숫자형 데이터
+categorical_features = ['Category', 'Color', 'Season', 'Frequency of Purchases'] # 문자열 데이터
+
 ```
 
 
@@ -88,18 +92,113 @@ data['Previous Purchases'] = pd.to_numeric(data['Previous Purchases'], errors='c
 ---
 
 
-## 4️⃣ 데이터 분석 및 모델링
+## 4️⃣ 데이터 전처리와 분석 및 모델링 그리고 테스트
 머신러닝 모델 훈련 및 평가
-클러스터링: K-Means, 랜덤 포레스트
+1. Clustering : K-Means
 예측 모델: Scikit-learn 기반 고객 그룹 예측
-python
-복사
-편집
+```python
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.compose import ColumnTransformer
 from sklearn.cluster import KMeans
+from sklearn.pipeline import Pipeline
 
-kmeans = KMeans(n_clusters=5)
-kmeans.fit(data[['Age', 'Purchase Amount (USD)']])
-data['Cluster'] = kmeans.labels_
+
+# 전처리기 정의: 수치형 특성은 정규화, 범주형 특성은 원-핫 인코딩
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), numeric_features),
+        ('cat', OneHotEncoder(handle_unknown='ignore'), categorical_features)
+    ])
+
+# 전처리와 K-means 클러스터링을 연결하는 파이프라인 생성
+pipeline = Pipeline([
+    ('preprocessor', preprocessor),
+    ('kmeans', KMeans(random_state=42))
+])
+
+# 분석에 사용할 특성 선택
+X = df[numeric_features + categorical_features]
+
+# 최적의 클러스터 수 찾기
+def calculate_wcss(pipeline, X, max_clusters=10):
+    wcss = []
+    for i in range(1, max_clusters + 1):
+        pipeline.set_params(kmeans__n_clusters=i)
+        pipeline.fit(X)
+        wcss.append(pipeline.named_steps['kmeans'].inertia_)
+    return wcss
+
+wcss = calculate_wcss(pipeline, X)
+
+# 최적의 클러스터 수 설정 및 클러스터링 수행
+optimal_clusters = 6
+pipeline.set_params(kmeans__n_clusters=optimal_clusters)
+df['Cluster'] = pipeline.fit_predict(X)
+
+
+
+
+
+```
+
+2. Classfication : LogisticRegression, RandomForestClassifier, XGBClassifier
+예측 모델: Scikit-learn 기반 고객 그룹 예측
+
+```python
+from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
+# 데이터 전처리 준비
+numeric_features2 = ['Age', 'Purchase Amount (USD)', 'Review Rating', 'Previous Purchases']
+categorical_features2 = ['Category', 'Color', 'Season', 'Frequency of Purchases']
+X2 = df[numeric_features2 + categorical_features2]
+y2 = df['Cluster']
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X2, y2, test_size=0.2, random_state=42)
+preprocessor2 = ColumnTransformer(
+    transformers=[
+        ('num', StandardScaler(), numeric_features2),
+        ('cat', OneHotEncoder(handle_unknown='ignore'), categorical_features2)
+
+# LogisticRegression 파이프라인
+logistic_pipeline = Pipeline([
+    ('preprocessor', preprocessor2),
+    ('classifier', LogisticRegression(random_state=42))
+])
+
+# RandomForestClassifier 파이프라인
+random_forest_pipeline = Pipeline([
+    ('preprocessor', preprocessor2),
+    ('classifier', RandomForestClassifier(random_state=42))
+])
+# XGBClassifier 파이프라인
+xgboost_pipeline = Pipeline([
+    ('preprocessor', preprocessor2),
+    ('classifier', XGBClassifier(random_state=42))
+])
+
+# 모델별 학습
+# LogisticRegression
+logistic_pipeline.fit(X_train, y_train)
+
+# RandomForestClassifier
+random_forest_pipeline.fit(X_train, y_train)
+
+# XGBClassifier
+xgboost_pipeline.fit(X_train, y_train)
+
+# 모델별 테스트
+logistic_pred = logistic_pipeline.predict(X_test)
+rf_pred = random_forest_pipeline.predict(X_test)
+xgb_pred = xgboost_pipeline.predict(X_test)
+
+# 테스트 결과
+![테스트 결과](image/test.png)
+```
+
+- LogisticRegressiond의 테스트 결과가 가장 우수하여 이후 앱 개발에 채택하였습니다.
+
+
 
 ---
 

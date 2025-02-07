@@ -317,8 +317,7 @@ streamlit run app.py
 이메일: dmdals1012@gmail.com
 
 Github 계정: https://github.com/dmdals1012 (Python 개발에 사용)
-
-            https://github.com/ColinKim1012 (Java 개발에 사용)
+https://github.com/ColinKim1012 (Java 개발에 사용)
 
 
 

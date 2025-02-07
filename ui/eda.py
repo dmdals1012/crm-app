@@ -3,18 +3,22 @@ import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 
+@st.cache_data
+def load_data():
+        data = pd.read_csv('data/customer_data3.csv', index_col=0)
+        data['Previous Purchases'] = pd.to_numeric(data['Previous Purchases'], errors='coerce')
+        return data
+
 def analyze_customers():
     st.title("고객 데이터 분석")
 
     st.info('고객을 분류별로 분석합니다.')
     
-    @st.cache_data
-    def load_data():
-        data = pd.read_csv('data/customer_data3.csv', index_col=0)
-        data['Previous Purchases'] = pd.to_numeric(data['Previous Purchases'], errors='coerce')
-        return data
+    
 
     data = load_data()
+    
+    st.markdown("---")  # 마크다운 선 추가
     
     # 1. 연령대별 구매 금액 분포 상자 그림 (정렬된)
     st.subheader("연령대별 구매 금액 분포")
@@ -24,6 +28,8 @@ def analyze_customers():
     fig.update_layout(xaxis_title='연령대', yaxis_title='구매 금액 (USD)')
     st.plotly_chart(fig)
 
+    st.markdown("---")  # 마크다운 선 추가
+
     # 2. 클러스터별 평균 구매 금액과 리뷰 평점
     st.subheader("클러스터별 평균 구매 금액과 리뷰 평점")
     cluster_stats = data.groupby('Cluster')[['Purchase Amount (USD)', 'Review Rating']].mean().reset_index()
@@ -31,6 +37,8 @@ def analyze_customers():
                      hover_data=['Cluster'])
     fig.update_layout(xaxis_title='평균 구매 금액 (USD)', yaxis_title='평균 리뷰 평점')
     st.plotly_chart(fig)
+
+    st.markdown("---")  # 마크다운 선 추가
 
     valid_categories = ['Clothing', 'Accessories', 'Footwear', 'Outerwear']
     valid_seasons = ['Spring', 'Summer', 'Fall', 'Winter']
@@ -42,6 +50,8 @@ def analyze_customers():
     fig.update_layout(xaxis_title='카테고리', yaxis_title='평균 구매 금액 (USD)')
     st.plotly_chart(fig)
 
+    st.markdown("---")  # 마크다운 선 추가
+
     # 4. 계절별 구매 패턴 막대 그래프
     st.subheader("계절별 구매 패턴")
     filtered_data = data[data['Season'].isin(valid_seasons) & data['Category'].isin(valid_categories)]
@@ -52,3 +62,4 @@ def analyze_customers():
             fig.add_trace(go.Bar(x=valid_seasons, y=[season_category.loc[season, category] if season in season_category.index else 0 for season in valid_seasons], name=category))
     fig.update_layout(barmode='stack', xaxis_title='계절', yaxis_title='구매 횟수')
     st.plotly_chart(fig)
+

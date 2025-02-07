@@ -1,25 +1,9 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 import plotly.express as px
-import os
-import matplotlib.font_manager as fm
-
-@st.cache_data
-def fontRegistered():
-    font_dirs = [os.getcwd() + '/custom_fonts']
-    font_files = fm.findSystemFonts(fontpaths=font_dirs)
-    for font_file in font_files:
-        fm.fontManager.addfont(font_file)
-    fm._load_fontmanager(try_read_cache=False)
-
+import plotly.graph_objects as go
 
 def analyze_customers():
-    fontRegistered()
-    plt.rc('font', family='NanumGothic')
-
-
     st.title("고객 데이터 분석")
 
     st.info('고객을 분류별로 분석합니다.')
@@ -31,64 +15,38 @@ def analyze_customers():
         return data
 
     data = load_data()
-    st.write(data)
     
-    # 기술 통계
-    st.subheader("기술 통계")
-    st.write(data.describe())
-    
-    # 클러스터별 과거 구매 기록 평균 분석
-    st.subheader("클러스터별 과거 구매 기록 평균")
-    if 'Cluster' in data.columns and 'Previous Purchases' in data.columns:
-        cluster_purchase_means = data.groupby('Cluster')['Previous Purchases'].mean().sort_values(ascending=False)
-        fig = px.bar(cluster_purchase_means, 
-                     x=cluster_purchase_means.index, 
-                     y=cluster_purchase_means.values,
-                     labels={'x': '클러스터', 'y': '평균 구매 횟수'},
-                     title='클러스터별 평균 과거 구매 횟수')
-        fig.update_layout(xaxis_title='클러스터', yaxis_title='평균 구매 횟수')
-        st.plotly_chart(fig)
-        
-        st.write("클러스터별 평균 과거 구매 횟수:")
-        st.write(cluster_purchase_means)
-    else:
-        st.warning("'Cluster' 또는 'Previous Purchases' 열이 데이터에 없습니다.")
-        
-    # 데이터 분포 시각화
-    st.subheader("데이터 분포 시각화")
-    numeric_cols = data.select_dtypes(include=['float64', 'int64']).columns
-    for col in numeric_cols:
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 5))
-        sns.histplot(data[col], kde=True, ax=ax1)
-        ax1.set_title(f'{col} 분포')
-        ax1.set_xlabel('값')
-        ax1.set_ylabel('빈도')
-    
-    if col == 'Review Rating':
-        x_min, x_max = data[col].min(), data[col].max()
-        x_range = x_max - x_min
-        ax1.set_xlim(x_min - x_range*0.25, x_max + x_range*0.25)
-    
-    sns.boxplot(x=data[col], ax=ax2)
-    ax2.set_title(f'{col} 박스플롯')
-    ax2.set_xlabel('값')
-    
-    if col == 'Review Rating':
-        ax2.set_xlim(x_min - x_range*0.25, x_max + x_range*0.25)
-    
-    st.pyplot(fig)
-    
-    # 클러스터별 특성 분석
-    if 'Cluster' in data.columns:
-        st.subheader("클러스터별 특성 분석(평균)")
-        cluster_means = data.groupby('Cluster')[numeric_cols].mean()
-        
-        # 히트맵으로 클러스터별 특성 시각화
-        fig = px.imshow(cluster_means.T, 
-                        labels=dict(x="클러스터", y="특성", color="평균값"),
-                        title="클러스터별 특성 평균")
-        st.plotly_chart(fig)
-        
-        st.write("클러스터별 특성 평균값:")
-        st.write(cluster_means)
+    # 1. 연령대별 구매 금액 분포 상자 그림 (정렬된)
+    st.subheader("연령대별 구매 금액 분포")
+    data['Age Group'] = pd.cut(data['Age'], bins=[0, 20, 30, 40, 50, 60, 100], labels=['0-20', '21-30', '31-40', '41-50', '51-60', '60+'])
+    age_order = ['0-20', '21-30', '31-40', '41-50', '51-60', '60+']
+    fig = px.box(data, x='Age Group', y='Purchase Amount (USD)', color='Age Group', category_orders={'Age Group': age_order})
+    fig.update_layout(xaxis_title='연령대', yaxis_title='구매 금액 (USD)')
+    st.plotly_chart(fig)
 
+    # 2. 클러스터별 평균 구매 금액과 리뷰 평점
+    st.subheader("클러스터별 평균 구매 금액과 리뷰 평점")
+    cluster_stats = data.groupby('Cluster')[['Purchase Amount (USD)', 'Review Rating']].mean().reset_index()
+    fig = px.scatter(cluster_stats, x='Purchase Amount (USD)', y='Review Rating', color='Cluster', size='Purchase Amount (USD)',
+                     hover_data=['Cluster'])
+    fig.update_layout(xaxis_title='평균 구매 금액 (USD)', yaxis_title='평균 리뷰 평점')
+    st.plotly_chart(fig)
+
+    # 3. 카테고리별 평균 구매 금액 막대 그래프
+    st.subheader("카테고리별 평균 구매 금액")
+    category_avg = data.groupby('Category')['Purchase Amount (USD)'].mean().sort_values(ascending=False)
+    fig = px.bar(category_avg, x=category_avg.index, y=category_avg.values)
+    fig.update_layout(xaxis_title='카테고리', yaxis_title='평균 구매 금액 (USD)')
+    st.plotly_chart(fig)
+
+    # 4. 계절별 구매 패턴 막대 그래프
+    st.subheader("계절별 구매 패턴")
+    season_category = pd.crosstab(data['Season'], data['Category'])
+    fig = go.Figure()
+    for category in season_category.columns:
+        fig.add_trace(go.Bar(x=season_category.index, y=season_category[category], name=category))
+    fig.update_layout(barmode='stack', xaxis_title='계절', yaxis_title='구매 횟수')
+    st.plotly_chart(fig)
+
+if __name__ == "__main__":
+    analyze_customers()

@@ -213,7 +213,7 @@ xgb_pred = xgboost_pipeline.predict(X_test)
 ---
 
 
-## 5️⃣ Streamlit 앱 개발 및 배포 준비
+## 5️⃣ Streamlit 앱 개발 및 배포
 1. UI/UX 설계: 사이드바 메뉴 및 페이지 구성
 ```python
 import streamlit as st
@@ -238,6 +238,7 @@ fig = px.scatter(df, x="sepal_width", y="sepal_length", color="species")
 st.plotly_chart(fig)
 ```
 
+
 3. Streamlit 클라우드에 Python 라이브러리를 설치할 requirements.txt 파일 생성
 ```bash
 streamlit
@@ -248,6 +249,11 @@ plotly
 joblib
 scikit-learn
 ```
+
+4. 로컬에서 테스트(6️⃣ 참조)
+
+5. Github에 프로젝트 업로드 후 Streamlit 앱 배포
+
 
 - 위 코드들은 예시이며 실제 코드는 ui 폴더와 app.py 파일을 참조하시면 됩니다.
 

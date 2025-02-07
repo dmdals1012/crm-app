@@ -141,7 +141,7 @@ df['Cluster'] = pipeline.fit_predict(X)
 
 
 ### 2. Classfication : LogisticRegression, RandomForestClassifier, XGBClassifier
-예측 모델: Scikit-learn 기반 고객 그룹 예측
+예측 모델: Scikit-learn 기반 고객 유형 예측
 
 ```python
 from sklearn.linear_model import LogisticRegression
@@ -197,6 +197,8 @@ xgb_pred = xgboost_pipeline.predict(X_test)
 
 
 - LogisticRegressiond의 테스트 결과가 가장 우수하여 이후 앱 개발에 채택하였습니다.
+
+- pipeline 기법을 사용하여 코드를 간소화 하고 효율적인 머신러닝을 진행하였습니다.
 
 
 

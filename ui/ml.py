@@ -15,7 +15,7 @@ cluster_descriptions = {
 }
 
 def predict_new_customer():
-    st.title("고객 관리")
+    st.title("고객 유형 예측")
 
     st.info('고객 정보를 입력하세요. 정확도도 97%의 인공지능이 고객의 유형과 마케팅 전략을 알려줍니다.')
 

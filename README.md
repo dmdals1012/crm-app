@@ -298,6 +298,14 @@ streamlit run app.py
 * 딥러닝: TensorFlow
 * 엔터프라이즈 개발: Spring Framework (Java), RESTful API 개발 경험
 
+**개발자 정보:**
+
+이메일: dmdals1012@gmail.com
+
+Github 계정: https://github.com/dmdals1012(Python 개발에 사용)
+            https://github.com/ColinKim1012(Java 개발에 사용)
+
+
 
 
 

@@ -194,7 +194,7 @@ xgb_pred = xgboost_pipeline.predict(X_test)
 ```
 
 
-![테스트 결과](image/test.png)
+!['테스트 결과'](image/test.png)
 
 
 - LogisticRegressiond의 테스트 결과가 가장 우수하여 이후 앱 개발에 채택하였습니다.

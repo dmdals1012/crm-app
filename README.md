@@ -81,6 +81,8 @@ import pandas as pd
 
 data = pd.read_csv('data/customer_data3.csv')
 data['Previous Purchases'] = pd.to_numeric(data['Previous Purchases'], errors='coerce')
+```
+
 
 
 ---

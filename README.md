@@ -278,10 +278,27 @@ streamlit run app.py
 
 
 
-## 🔄 지속적인 개선 및 유지보수
-피드백 수집 및 반영
+## 🔄 개발자 소개
 
-정기적인 모델 업데이트 및 성능 개선
+### 🛠️ 개발 환경 및 기술 스택
+
+본 프로젝트는 Python과 Streamlit을 활용하여 개발했습니다. 데이터 분석, 머신러닝, 웹 개발 분야에 대한 깊이 있는 이해를 바탕으로 프로젝트를 완성도 높게 구현하고자 노력했습니다.
+
+**주요 기술 스택:**
+*   언어: Python
+*   프레임워크: Streamlit
+*   라이브러리: Pandas, NumPy, Scikit-learn, Plotly, Matplotlib 등등
+
+**추가 기술 역량:**
+* 언어: Java
+* 데이터베이스: SQL
+* 웹 개발: HTML, CSS, JavaScript
+* 클라우드 서비스: AWS
+* 버전 관리: Git, GitHub
+* 딥러닝: TensorFlow
+* 엔터프라이즈 개발: Spring Framework (Java), RESTful API 개발 경험
+
+
 
 
 

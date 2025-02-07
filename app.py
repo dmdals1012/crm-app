@@ -19,15 +19,19 @@ def sidebar():
 
     st.sidebar.markdown("---")
 
-    
-
-    # 메뉴 선택 (아이콘 포함)
-    menu = ['🏠 홈', '📖 앱 소개', '👥 고객 관리', '📊 고객 분석', '🛠️ 개발 과정']
+    # 주요 메뉴 선택 (아이콘 포함)
+    main_menu = ['🏠 홈', '📖 앱 소개', '👥 고객 관리', '📊 고객 분석']
     choice = st.sidebar.radio(
         "메뉴 선택",
-        menu,
-        format_func=lambda x: x.split()[-1]
+        main_menu,
     )
+
+    # 구분선 추가
+    st.sidebar.markdown("---")
+
+    # 개발 과정 메뉴 별도 배치
+    if st.sidebar.button('🛠️ 개발 과정'):
+        choice = '🛠️ 개발 과정'
 
     st.sidebar.markdown("---")
 
@@ -58,9 +62,16 @@ def sidebar():
     
 
 def main():
+    if 'page' not in st.session_state:
+        st.session_state.page = '홈'
+
+    # 사이드바는 항상 표시
     choice = sidebar()
 
-    if choice == '🏠 홈':
+    # 세션 상태에 따라 페이지 표시
+    if st.session_state.page == '개발 과정':
+        development_process()
+    elif choice == '🏠 홈':
         home_page()
     elif choice == '📖 앱 소개':
         app_description()
@@ -68,9 +79,6 @@ def main():
         predict_new_customer()
     elif choice == '📊 고객 분석':
         analyze_customers()
-    elif choice == '🛠️ 개발 과정':
-        development_process()
-
 
 if __name__ == '__main__':
     main()

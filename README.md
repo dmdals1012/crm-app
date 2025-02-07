@@ -135,10 +135,10 @@ optimal_clusters = 6
 pipeline.set_params(kmeans__n_clusters=optimal_clusters)
 df['Cluster'] = pipeline.fit_predict(X)
 
-``
+```
 - 최적의 클러스터 수는 처음엔 7개를 지정했지만 특정 클러수터의 수가 적어 이후 6개로 다시 지정하여 학습하였습니다.
 
-`
+
 
 2. Classfication : LogisticRegression, RandomForestClassifier, XGBClassifier
 예측 모델: Scikit-learn 기반 고객 그룹 예측

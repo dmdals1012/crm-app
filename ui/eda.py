@@ -63,10 +63,20 @@ def analyze_customers():
         ax1.set_title(f'{col} 분포')
         ax1.set_xlabel('값')
         ax1.set_ylabel('빈도')
-        sns.boxplot(x=data[col], ax=ax2)
-        ax2.set_title(f'{col} 박스플롯')
-        ax2.set_xlabel('값')
-        st.pyplot(fig)
+    
+    if col == 'Review Rating':
+        x_min, x_max = data[col].min(), data[col].max()
+        x_range = x_max - x_min
+        ax1.set_xlim(x_min - x_range*0.25, x_max + x_range*0.25)
+    
+    sns.boxplot(x=data[col], ax=ax2)
+    ax2.set_title(f'{col} 박스플롯')
+    ax2.set_xlabel('값')
+    
+    if col == 'Review Rating':
+        ax2.set_xlim(x_min - x_range*0.25, x_max + x_range*0.25)
+    
+    st.pyplot(fig)
     
     # 클러스터별 특성 분석
     if 'Cluster' in data.columns:

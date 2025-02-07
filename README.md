@@ -63,7 +63,7 @@
 ## 2️⃣ 개발 환경 설정  
 - **필수 라이브러리 설치**  
 ```bash
-pip install streamlit pandas numpy matplotlib seaborn scikit-learn plotly xgboost
+pip install streamlit pandas numpy matplotlib seaborn scikit-learn plotly xgboost joblib
 
 ```
 

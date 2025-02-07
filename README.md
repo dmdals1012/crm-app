@@ -65,9 +65,8 @@
 ```bash
 python -m venv customer_app_env
 source customer_app_env/bin/activate  # Windows: customer_app_env\Scripts\activate
-pip install -r requirements.txt ```
-
-
+pip install -r requirements.txt 
+```
 
 
 ---

@@ -7,6 +7,7 @@ from ui.description import app_description
 from ui.eda import analyze_customers
 from ui.home import home_page
 from ui.ml import predict_new_customer
+from ui.process import development_process
 
 def sidebar():
     # 로고 추가
@@ -21,7 +22,7 @@ def sidebar():
     
 
     # 메뉴 선택 (아이콘 포함)
-    menu = ['🏠 홈', '📖 앱 소개', '👥 고객 관리', '📊 고객 분석']
+    menu = ['🏠 홈', '📖 앱 소개', '👥 고객 관리', '📊 고객 분석', '🛠️ 개발 과정']
     choice = st.sidebar.radio(
         "메뉴 선택",
         menu,
@@ -67,6 +68,9 @@ def main():
         predict_new_customer()
     elif choice == '📊 고객 분석':
         analyze_customers()
+    elif choice == '🛠️ 개발 과정':
+        development_process()
+
 
 if __name__ == '__main__':
     main()

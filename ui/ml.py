@@ -17,7 +17,12 @@ cluster_descriptions = {
 def predict_new_customer():
     st.title("고객 관리")
 
-    st.info('고객 정보를 입력하세요. 적중률 97%의 인공지능이 고객의 유형과 마케팅 전략을 알려줍니다.')
+    st.info('고객 정보를 입력하세요. 정확도도 97%의 인공지능이 고객의 유형과 마케팅 전략을 알려줍니다.')
+
+    st.markdown("---")
+
+    st.markdown("## 머신러닝 과정 ⚙️")
+    st.markdown("이 모델은 K-means 클러스터링과 Logistic Regression을 사용하여 고객 유형을 예측합니다. 자세한 내용은 **앱 소개** 탭을 참고해주세요.")
     
     age = st.number_input("나이", min_value=18, max_value=70)
     purchase_amount = st.number_input("구매 금액 (USD)", min_value=20, max_value=100)

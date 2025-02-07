@@ -12,7 +12,7 @@ def load_data():
         return None
 
 def app_description():
-    st.title("👔 스타일 인사이트 CRM 📊")
+    st.title("👔 의류 온라인쇼핑몰 CRM 📊")
     
     st.markdown("---")
     

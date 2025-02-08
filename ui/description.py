@@ -36,13 +36,13 @@ def app_description():
     # 엘보우 메소드 이미지 표시
     try:
         elbow_image = Image.open("image/elbow.png")  # 이미지 파일 경로를 여기에 입력하세요
-        st.image(elbow_image, caption="Elbow Method for Optimal Cluster Count", use_container_width=True)
+        st.image(elbow_image, caption="엘보우 메소드", use_container_width=True)
         st.markdown("엘보우 메소드를 통해 최적의 클러스터 갯수를 분석한 결과, **6개의 클러스터**로 고객을 세분화하는 것이 가장 적합하다고 판단하였습니다.")
     except FileNotFoundError:
         st.error("엘보우 메소드 이미지를 찾을 수 없습니다. 'image/elbow.png' 경로를 확인하세요.")
 
     st.markdown("- **LogisticRegression:**  K-means로 세분화된 고객 데이터를 기반으로 고객 유형을 예측하는 지도 학습 모델")
-    st.markdown("   - 다양한 모델을 실험한 결과, LogisticRegression 모델이 **97%**의 정확도로 가장 뛰어난 성능을 보여 최종적으로 채택되었습니다.")
+    st.markdown("   - 다양한 모델을 실험한 결과, LogisticRegression 모델이 **97%** 의 정확도로 가장 뛰어난 성능을 보여 최종적으로 채택되었습니다.")
     
     st.markdown("### 2. 데이터 분석 📊")
     st.markdown("다양한 시각화 기법을 통해 고객 데이터에서 유용한 인사이트를 도출합니다.")
@@ -80,4 +80,4 @@ def app_description():
     st.markdown("- 이메일: dmdals1012@gmail.com")
     st.markdown("- GitHub: [https://github.com/dmdals1012/customer-app](https://github.com/dmdals1012/customer-app.git)")
 
-    st.success("스타일 인사이트 CRM으로 고객 관계 관리를 혁신하세요! 🚀")
+    st.success("의류 온라인쇼핑몰 CRM으로 고객 관계 관리를 혁신하세요! 🚀")

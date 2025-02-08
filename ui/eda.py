@@ -169,7 +169,7 @@ def analyze_age_avg(data):
     highest_avg_amount = age_avg.max()
 
     st.markdown(f"- 평균 구매 금액이 가장 높은 연령대는 **{highest_avg_age}**이며, 평균 구매 금액은 **{highest_avg_amount:,.2f} USD** 입니다. 💰")
-    st.markdown(f"- {highest_avg_age} 연령대 고객의 구매 패턴을 분석하여, 유사한 특성을 가진 고객층을 발굴하고 맞춤형 상품을 추천하는 전략을 수립할 수 있습니다. 🎁")
+    st.markdown(f"- {highest_avg_age} 연령대 고객의 구매 패턴을 분석하여, 비슷한 연령대의 고객층을 발굴하고 맞춤형 상품을 추천하는 전략을 수립할 수 있습니다. 🎁")
 
 def analyze_cluster_purchase(data):
     st.subheader("클러스터별 평균 구매 금액 분석")
@@ -288,17 +288,4 @@ def analyze_customers(data):
     
     analyze_cluster_age_distribution(data)
 
-def main():
-    st.title("👔 의류 온라인 쇼핑몰 CRM 📊")
 
-    # 데이터 로드
-    data = load_data()
-
-    if data is not None:
-        # 고객 데이터 분석 실행
-        analyze_customers(data)
-    else:
-        st.error("데이터를 불러오는 데 실패했습니다.")
-
-if __name__ == "__main__":
-    main()

@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
-from PIL import Image  # Pillow 라이브러리에서 Image 클래스 import
+from PIL import Image
+
+from ui.eda import analyze_gender_counts  # Pillow 라이브러리에서 Image 클래스 import
 
 @st.cache_data
 def load_data():
@@ -13,7 +15,7 @@ def load_data():
         return None
 
 def app_description():
-    st.title("👔 의류 온라인쇼핑몰 CRM 📊")
+    st.title("👔 의류 쇼핑몰 CRM 📊")
     
     st.markdown("---")
     
@@ -29,9 +31,34 @@ def app_description():
     st.markdown("## 주요 기능 🚀")
 
     st.markdown("### 1. 고객 유형 예측 🎯")
-    st.markdown("K-means 클러스터링으로 고객을 세분화하고, LogisticRegression 모델로 고객 유형을 예측합니다.")
-    st.markdown("- **K-means 클러스터링:** 고객 데이터를 유사한 그룹으로 묶는 알고리즘")
-    st.markdown("   - 데이터 전처리 → 최적 클러스터 개수 결정 → 클러스터링")
+    
+    st.markdown("#### 예측 모델 구축")
+    st.markdown("- **모델 선택**: LogisticRegression 모델을 사용하여 고객 유형을 예측합니다.")
+    st.markdown("  - 다양한 모델(RandomForestClassifier, XGBClassifier 등)을 실험한 결과, LogisticRegression이 97%의 정확도로 가장 우수한 성능을 보여 채택되었습니다.")
+    st.markdown("- **모델 학습**: 세분화된 고객 데이터를 사용하여 모델을 학습시킵니다.")
+    st.markdown("- **모델 평가 및 최적화**: 학습된 모델의 성능을 평가하고 필요시 하이퍼파라미터 튜닝 등을 통해 최적화합니다.")
+
+    st.markdown("#### 데이터 준비 및 고객 세분화")
+    st.markdown("- **데이터 수집**: 고객의 인구통계학적 정보, 구매 이력, 행동 패턴 등 다양한 데이터를 수집합니다.")
+    
+    # 데이터 프레임 표시
+    data = load_data()  # 데이터 로드
+    if data is not None:
+        st.markdown("#### 클러스터링에 사용된 데이터 샘플")
+        
+        # 'Cluster' 컬럼이 있다면 제외
+        if 'Cluster' in data.columns:
+            sample_data = data.drop('Cluster', axis=1).head()
+        else:
+            sample_data = data.head()
+        
+        st.dataframe(sample_data)  # 데이터 프레임의 처음 5행 표시 (Cluster 컬럼 제외)
+        st.markdown("위 **데이터 샘플**의 출처는 아래 **개발 과정 🛠️** 을 참고해주세요.")
+    else:
+        st.error("데이터를 불러오는 데 실패했습니다.")
+
+    st.markdown("- **데이터 전처리**: 결측치 처리, 이상치 제거, 특성 스케일링 등을 수행합니다.")
+    st.markdown("- **고객 세분화**: K-means 클러스터링 알고리즘을 사용하여 고객을 유사한 특성을 가진 그룹으로 세분화합니다.")
     
     # 엘보우 메소드 이미지 표시
     try:
@@ -41,25 +68,24 @@ def app_description():
     except FileNotFoundError:
         st.error("엘보우 메소드 이미지를 찾을 수 없습니다. 'image/elbow.png' 경로를 확인하세요.")
 
-    st.markdown("- **LogisticRegression:**  K-means로 세분화된 고객 데이터를 기반으로 고객 유형을 예측하는 지도 학습 모델")
-    st.markdown("   - 다양한 모델을 실험한 결과, LogisticRegression 모델이 **97%** 의 정확도로 가장 뛰어난 성능을 보여 최종적으로 채택되었습니다.")
-    
+
+    st.markdown("#### 실시간 예측 및 활용")
+    st.markdown("- 새로운 고객 데이터가 입력되면, 학습된 LogisticRegression 모델을 사용하여 즉시 고객 유형을 예측합니다.")
+    st.markdown("- 예측된 고객 유형에 따라 맞춤형 마케팅 전략을 수립하고 개인화된 서비스를 제공합니다.")
+
     st.markdown("### 2. 데이터 분석 📊")
     st.markdown("다양한 시각화 기법을 통해 고객 데이터에서 유용한 인사이트를 도출합니다.")
-    st.markdown("추가적으로 필요한 분석이 있다면 추가하겠습니다.")
-    
-    # 데이터 프레임 표시
-    data = load_data()  # 데이터 로드
+    st.markdown("- 다음은 데이터 분석 탭에서 보여드리는 차트 예시입니다.")
+
     if data is not None:
-        st.dataframe(data.head())  # 데이터 프레임의 처음 5행 표시
-        st.markdown("위 **데이터 샘플**의 출처는 아래에 표시해두었습니다.")
-        st.markdown("- **주요 분석 내용:**")
-        st.markdown("   - 성별, 연령대, 구매 금액, 상품 카테고리 (의류, 액세서리, 신발, 겉옷 등), 위치, 시즌, 결제 방식, 리뷰 평점 등")
-        st.markdown("   - 고객 그룹별 특징 및 구매 패턴 분석")
-        st.markdown("   - **CRM 최적화를 위한 주요 인사이트 도출**")
-        st.markdown("   - 매출 트렌드 및 주요 요인 분석")
+        analyze_gender_counts(data)
     else:
         st.error("데이터를 불러오는 데 실패했습니다.")
+
+    st.markdown("#### 더 많은 분석 내용")
+    st.markdown("   - 고객 그룹별 특징 및 구매 패턴 분석")
+    st.markdown("   - **CRM 최적화를 위한 주요 인사이트 도출**")
+    st.markdown("   - 매출 트렌드 및 주요 요인 분석")
 
     st.markdown("---")
     
@@ -80,4 +106,4 @@ def app_description():
     st.markdown("- 이메일: dmdals1012@gmail.com")
     st.markdown("- GitHub: [https://github.com/dmdals1012/customer-app](https://github.com/dmdals1012/customer-app.git)")
 
-    st.success("의류 온라인쇼핑몰 CRM으로 고객 관계 관리를 혁신하세요! 🚀")
+    st.success("의류 쇼핑몰 CRM으로 고객 관계 관리를 혁신하세요! 🚀")

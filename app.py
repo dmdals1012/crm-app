@@ -10,7 +10,7 @@ from ui.eda import analyze_age_avg, analyze_age_counts, analyze_category_amounts
 
 def sidebar():
     # 사이드바 제목
-    st.sidebar.title("👔 의류 온라인쇼핑몰 CRM 📊")
+    st.sidebar.title("👔 의류 쇼핑몰 CRM 📊")
 
     st.sidebar.markdown("---")
 

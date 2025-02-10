@@ -15,7 +15,7 @@ def load_data():
         return None
 
 def analyze_gender_counts(data):
-    st.subheader("성별별 구매 건수 분석")
+    st.subheader("성별에 따른 구매 건수 분석")
     gender_counts = data['Gender'].value_counts()
     fig_gender = px.bar(x=gender_counts.index, y=gender_counts.values,
                          labels={'x': '성별', 'y': '구매 건수'},

@@ -242,7 +242,7 @@ def analyze_cluster_age_distribution(data):
             top_age_count = cluster_age.loc[cluster, top_age_group]
             percentage = (top_age_count / cluster_age.loc[cluster].sum()) * 100
 
-            st.markdown(f"- 클러스터 **{cluster}**: 가장 많은 연령대는 **{top_age_group}**이며, 해당 클러스터의 **{percentage:.1f}%** 를 차지하는 **{top_age_count:,}**명 입니다. 👶")
+            st.markdown(f"- 클러스터 **{cluster}**: 가장 많은 연령대는 **{top_age_group}** 이며, 해당 클러스터의 **{percentage:.1f}%** 를 차지하는 **{top_age_count:,}**명 입니다. 👶")
     except KeyError:
         st.error("DataFrame에 'Cluster' 또는 'Age' 컬럼이 없습니다.")
     except Exception as e:

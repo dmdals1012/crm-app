@@ -21,7 +21,7 @@ def app_description():
     
     st.markdown("## 이 앱은 무엇을 하나요? 🤔")
     st.markdown("**스타일 인사이트 CRM**은 **온라인 의류 쇼핑몰**의 고객 데이터를 분석하고, 머신러닝을 활용하여 고객 관계 관리(CRM)를 최적화하는 시스템입니다.")
-    st.markdown("- **추천 대상:**")
+    st.markdown("### **추천 대상:**")
     st.markdown("   - 온라인 의류 쇼핑몰 운영자")
     st.markdown("   - CRM 전략 담당자")
     st.markdown("   - 데이터 분석 및 마케팅 전문가")

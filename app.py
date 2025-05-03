@@ -59,7 +59,7 @@ def data_analysis_page():
     tab1, tab2, tab3 = st.tabs([
         f"📊 고객 분석",
         f"📈 매출 분석",
-        f"👨‍👩‍👧‍👦 클러스터 분석"
+        f"👨‍👩‍👧‍👦 고객 유형별 분석"
     ])
     
     with tab1:
@@ -98,13 +98,13 @@ def data_analysis_page():
         analyze_season_category(data)
     
     with tab3:
-        st.subheader("클러스터 분석")
+        st.subheader("고객 유형별 분석")
         st.markdown(
             """
             <div style="background-color:#f0f2f6;padding:10px;border-radius:5px;">
-            <span style="font-weight:bold;color:#262730;">👨‍👩‍👧‍👦 목표:</span> 고객을 <span style="color:#e44d26;">유사한 그룹</span>으로 나누어 각 클러스터의 특징을 분석하고, <span style="color:#e44d26;">맞춤형 서비스</span>를 제공합니다.
+            <span style="font-weight:bold;color:#262730;">👨‍👩‍👧‍👦 목표:</span> 고객을 <span style="color:#e44d26;">유사한 그룹</span>으로 나누어 각 고객 유형별의 특징을 분석하고, <span style="color:#e44d26;">맞춤형 서비스</span>를 제공합니다.
             <br>
-            <span style="font-weight:bold;color:#262730;">🔑 주요 분석 내용:</span> 클러스터별 구매 패턴, 리뷰 평점 등을 분석하여 클러스터 특성을 파악합니다.
+            <span style="font-weight:bold;color:#262730;">🔑 주요 분석 내용:</span> 고객 유형별별 구매 패턴, 리뷰 평점 등을 분석하여 클러스터 특성을 파악합니다.
             </div>
             """,
             unsafe_allow_html=True

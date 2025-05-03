@@ -12,7 +12,7 @@ def load_data():
         st.error(f"데이터 로딩 중 오류 발생: {e}")
         return None
 
-# 클러스터 번호별 고객유형 이름
+# 고객 유형 번호별 이름
 customer_type_names = {
     0: "고액 소비 VIP 고객",
     1: "젊은 신규 고객",
@@ -23,14 +23,14 @@ customer_type_names = {
 }
 
 def show_customer_types(data):
-    if "Cluster" in data.columns:
-        st.markdown("### 🏷️ 클러스터별 고객유형 분류")
+    if "고객유형" in data.columns:
+        st.markdown("### 🏷️ 고객 유형 분류")
         for k, v in customer_type_names.items():
-            st.markdown(f"- 클러스터 {k} : {v}")
+            st.markdown(f"- 고객 유형 {k} : {v}")
         st.markdown("---")
 
 def get_customer_type_name(idx):
-    return customer_type_names.get(idx, f"클러스터 {idx}")
+    return customer_type_names.get(idx, f"유형 {idx}")
 
 def analyze_gender_counts(data):
     st.subheader("성별에 따른 구매 건수 분석")
@@ -113,46 +113,46 @@ def analyze_age_avg(data):
     st.plotly_chart(fig_age, key='age_avg_chart')
 
 def analyze_cluster_purchase(data):
-    st.subheader("클러스터별(고객유형별) 평균 구매 금액 분석")
-    if "Cluster" in data.columns:
+    st.subheader("고객 유형별 평균 구매 금액 분석")
+    if "고객유형" in data.columns:
         show_customer_types(data)
-        avg_purchase = data.groupby('Cluster')['Purchase Amount (USD)'].mean().sort_index()
+        avg_purchase = data.groupby('고객유형')['Purchase Amount (USD)'].mean().sort_index()
         x_labels = [f"{i} ({get_customer_type_name(i)})" for i in avg_purchase.index]
         fig = px.bar(x=x_labels, y=avg_purchase.values,
-                     labels={'x': '클러스터(고객유형)', 'y': '평균 구매 금액 (USD)'},
-                     title='클러스터(고객유형)별 평균 구매 금액')
-        st.plotly_chart(fig, key='cluster_purchase_chart')
+                     labels={'x': '고객 유형', 'y': '평균 구매 금액 (USD)'},
+                     title='고객 유형별 평균 구매 금액')
+        st.plotly_chart(fig, key='customer_type_purchase_chart')
 
 def analyze_cluster_rating(data):
-    st.subheader("클러스터별(고객유형별) 평균 리뷰 평점 분석")
-    if "Cluster" in data.columns:
-        avg_rating = data.groupby('Cluster')['Review Rating'].mean().sort_index()
+    st.subheader("고객 유형별 평균 리뷰 평점 분석")
+    if "고객유형" in data.columns:
+        avg_rating = data.groupby('고객유형')['Review Rating'].mean().sort_index()
         x_labels = [f"{i} ({get_customer_type_name(i)})" for i in avg_rating.index]
         fig = px.bar(x=x_labels, y=avg_rating.values,
-                     labels={'x': '클러스터(고객유형)', 'y': '평균 리뷰 평점'},
-                     title='클러스터(고객유형)별 평균 리뷰 평점')
-        st.plotly_chart(fig, key='cluster_rating_chart')
+                     labels={'x': '고객 유형', 'y': '평균 리뷰 평점'},
+                     title='고객 유형별 평균 리뷰 평점')
+        st.plotly_chart(fig, key='customer_type_rating_chart')
 
 def analyze_cluster_sales(data):
-    st.subheader("클러스터별(고객유형별) 총 매출액")
-    if "Cluster" in data.columns:
-        sales = data.groupby('Cluster')['Purchase Amount (USD)'].sum().sort_index()
+    st.subheader("고객 유형별 총 매출액")
+    if "고객유형" in data.columns:
+        sales = data.groupby('고객유형')['Purchase Amount (USD)'].sum().sort_index()
         x_labels = [f"{i} ({get_customer_type_name(i)})" for i in sales.index]
         fig = px.bar(x=x_labels, y=sales.values,
-                     labels={'x': '클러스터(고객유형)', 'y': '총 구매 금액 (USD)'},
-                     title='클러스터(고객유형)별 총 매출액')
-        st.plotly_chart(fig, key='cluster_sales_chart')
+                     labels={'x': '고객 유형', 'y': '총 구매 금액 (USD)'},
+                     title='고객 유형별 총 매출액')
+        st.plotly_chart(fig, key='customer_type_sales_chart')
 
 def analyze_cluster_age_distribution(data):
-    st.subheader("클러스터별(고객유형별) 연령 분포")
-    if "Cluster" in data.columns:
+    st.subheader("고객 유형별 연령 분포")
+    if "고객유형" in data.columns:
         age_groups = [0, 20, 30, 40, 50, 60, 100]
         age_labels = ['0-20', '21-30', '31-40', '41-50', '51-60', '60+']
         data['Age Group'] = pd.cut(data['Age'], bins=age_groups, labels=age_labels, right=False)
-        cluster_age = data.groupby(['Cluster', 'Age Group']).size().unstack(fill_value=0)
-        cluster_age.index = [f"{i} ({get_customer_type_name(i)})" for i in cluster_age.index]
-        fig = px.bar(cluster_age, x=cluster_age.index, y=cluster_age.columns,
-                     labels={'value': '고객 수', 'x': '클러스터(고객유형)', 'columns': '연령대'},
-                     title='클러스터(고객유형)별 연령 분포')
+        type_age = data.groupby(['고객유형', 'Age Group']).size().unstack(fill_value=0)
+        type_age.index = [f"{i} ({get_customer_type_name(i)})" for i in type_age.index]
+        fig = px.bar(type_age, x=type_age.index, y=type_age.columns,
+                     labels={'value': '고객 수', 'x': '고객 유형', 'columns': '연령대'},
+                     title='고객 유형별 연령 분포')
         fig.update_layout(barmode='stack')
-        st.plotly_chart(fig, key='cluster_age_chart')
+        st.plotly_chart(fig, key='customer_type_age_chart')

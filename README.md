@@ -1,5 +1,7 @@
 # 🚀 고객 분석 및 관리 시스템 (CRM-App)
 
+Streamlit app : https://crm-app-mq6ptcxn3daxope3ymkuxl.streamlit.app/
+
 ## 📌 프로젝트 개요
 이 프로젝트는 고객 데이터를 분석하고 체계적으로 관리하는 AI 기반 종합 시스템입니다.  
 머신러닝 기술을 활용하여 고객 세그먼테이션을 수행하고, 데이터 시각화를 통해 인사이트를 제공합니다.  

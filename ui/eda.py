@@ -24,9 +24,9 @@ customer_type_names = {
 
 def show_customer_types(data):
     if "Cluster" in data.columns:
-        st.markdown("### 🏷️ 클러스터별 고객유형 분류")
+        st.markdown("### 🏷️ 고객 유형별 고객유형 분류")
         for k, v in customer_type_names.items():
-            st.markdown(f"- 클러스터 {k} : {v}")
+            st.markdown(f"- 고객 유형 {k+1} : {v}")
         st.markdown("---")
 
 def get_customer_type_name(idx):

@@ -64,8 +64,8 @@ def analyze_gender_counts(data):
                          title='성별별 구매 건수')
     st.plotly_chart(fig_gender, key='gender_chart')
     total_purchases = gender_counts.sum()
-    male_percentage = (gender_counts['Male'] / total_purchases) * 100 if 'Male' in gender_counts else 0
-    female_percentage = (gender_counts['Female'] / total_purchases) * 100 if 'Female' in gender_counts else 0
+    male_percentage = (gender_counts.get('Male', 0) / total_purchases) * 100
+    female_percentage = (gender_counts.get('Female', 0) / total_purchases) * 100
     st.markdown(f"- 남성 구매자는 전체 구매의 **{male_percentage:.1f}%** 를 차지하며, 여성 구매자는 **{female_percentage:.1f}%** 를 차지합니다. 📊")
     st.markdown(f"- 남성 구매자의 비중이 약간 더 높은 것으로 보아, 남성 고객을 위한 마케팅 전략을 강화하는 것이 효과적일 수 있습니다. 🎯")
 
@@ -179,7 +179,7 @@ def analyze_age_avg(data):
     st.markdown(f"- 평균 구매 금액이 가장 높은 연령대는 **{highest_avg_age}**이며, 평균 구매 금액은 **{highest_avg_amount:,.2f} USD** 입니다. 💰")
     st.markdown(f"- {highest_avg_age} 연령대 고객의 구매 패턴을 분석하여, 비슷한 연령대의 고객층을 발굴하고 맞춤형 상품을 추천하는 전략을 수립할 수 있습니다. 🎁")
 
-def analyze_customer_type_purchase(data):
+def analyze_cluster_purchase(data):
     st.subheader("고객 유형별 평균 구매 금액 분석")
     avg_purchase = data.groupby('고객 유형')['Purchase Amount (USD)'].mean().sort_index()
     x_labels = [get_customer_type_name(i) for i in avg_purchase.index]
@@ -195,7 +195,7 @@ def analyze_customer_type_purchase(data):
     st.markdown(f"- **특성:** {desc}")
     st.markdown(f"- **마케팅 전략:** {strategy}")
 
-def analyze_customer_type_rating(data):
+def analyze_cluster_rating(data):
     st.subheader("고객 유형별 평균 리뷰 평점 분석")
     avg_rating = data.groupby('고객 유형')['Review Rating'].mean().sort_index()
     x_labels = [get_customer_type_name(i) for i in avg_rating.index]
@@ -211,7 +211,7 @@ def analyze_customer_type_rating(data):
     st.markdown(f"- **특성:** {desc}")
     st.markdown(f"- **마케팅 전략:** {strategy}")
 
-def analyze_customer_type_sales(data):
+def analyze_cluster_sales(data):
     st.subheader("고객 유형별 총 매출액")
     sales = data.groupby('고객 유형')['Purchase Amount (USD)'].sum().sort_index()
     x_labels = [get_customer_type_name(i) for i in sales.index]
@@ -227,7 +227,7 @@ def analyze_customer_type_sales(data):
     st.markdown(f"- **특성:** {desc}")
     st.markdown(f"- **마케팅 전략:** {strategy}")
 
-def analyze_customer_type_age_distribution(data):
+def analyze_cluster_age_distribution(data):
     st.subheader("고객 유형별 연령 분포")
     age_groups = [0, 20, 30, 40, 50, 60, 100]
     age_labels = ['0-20', '21-30', '31-40', '41-50', '51-60', '60+']
@@ -278,20 +278,7 @@ def analyze_customers(data):
     customer_analysis(data)
     analyze_age_avg(data)
     describe_customer_types()
-    analyze_customer_type_purchase(data)
-    analyze_customer_type_rating(data)
-    analyze_customer_type_sales(data)
-    analyze_customer_type_age_distribution(data)
-
-# Streamlit 앱 실행
-def main():
-    st.set_page_config(page_title="고객 데이터 통합 분석", layout="wide")
-    data = load_data()
-    if data is not None:
-        analyze_customers(data)
-        sales_analysis(data)
-    else:
-        st.error("데이터를 불러올 수 없습니다.")
-
-if __name__ == "__main__":
-    main()
+    analyze_cluster_purchase(data)
+    analyze_cluster_rating(data)
+    analyze_cluster_sales(data)
+    analyze_cluster_age_distribution(data)

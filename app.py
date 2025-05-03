@@ -1,158 +1,130 @@
 import streamlit as st
+from PIL import Image
+from datetime import datetime, timedelta
 import pandas as pd
-import plotly.express as px
 
-@st.cache_data
-def load_data():
-    try:
-        data = pd.read_csv('data/customer_data.csv', index_col=0, engine='python', on_bad_lines='skip', sep=',', quotechar='"', escapechar='\\')
-        data['Previous Purchases'] = pd.to_numeric(data['Previous Purchases'], errors='coerce')
-        return data
-    except Exception as e:
-        st.error(f"데이터 로딩 중 오류 발생: {e}")
-        return None
+from ui.description import app_description
+from ui.home import home_page
+from ui.ml import predict_new_customer
+from ui.eda import analyze_age_avg, analyze_age_counts, analyze_category_amounts, analyze_cluster_age_distribution, analyze_cluster_purchase, analyze_cluster_rating, analyze_cluster_sales, analyze_gender_counts, analyze_item_amounts, analyze_location_amounts, analyze_payment_counts, analyze_season_amounts, analyze_season_category, load_data
 
-# 클러스터 번호별 고객유형 이름
-customer_type_names = {
-    0: "고액 소비 VIP 고객",
-    1: "젊은 신규 고객",
-    2: "중간 소비 젊은 고객",
-    3: "중년층 충성 고객",
-    4: "보수적인 중장년층 고객",
-    5: "가격에 민감한 중년층 고객"
-}
+def sidebar():
+    # 사이드바 제목
+    st.sidebar.title("👔 의류 쇼핑몰 CRM 📊")
 
-def show_customer_types(data):
-    if "Cluster" in data.columns:
-        st.markdown("### 🏷️ 클러스터별 고객유형 분류")
-        for k, v in customer_type_names.items():
-            st.markdown(f"- 클러스터 {k} : {v}")
-        st.markdown("---")
+    st.sidebar.markdown("---")
 
-def get_customer_type_name(idx):
-    return customer_type_names.get(idx, f"클러스터 {idx}")
+    # 주요 메뉴 선택 (아이콘 포함)
+    pages = {
+        "🏠 홈": home_page,
+        "📖 앱 소개": app_description,
+        "🎯 고객 유형 예측": predict_new_customer,
+        "📊 데이터 분석": lambda: data_analysis_page()
+    }
+    
+    choice = st.sidebar.radio("메뉴 선택", list(pages.keys()))
 
-def analyze_gender_counts(data):
-    st.subheader("성별에 따른 구매 건수 분석")
-    gender_counts = data['Gender'].value_counts()
-    fig_gender = px.bar(x=gender_counts.index, y=gender_counts.values,
-                         labels={'x': '성별', 'y': '구매 건수'},
-                         title='성별별 구매 건수')
-    st.plotly_chart(fig_gender, key='gender_chart')
-    total_purchases = gender_counts.sum()
-    male_percentage = (gender_counts.get('Male', 0) / total_purchases) * 100
-    female_percentage = (gender_counts.get('Female', 0) / total_purchases) * 100
-    st.markdown(f"- 남성 구매자는 전체 구매의 **{male_percentage:.1f}%** 를 차지하며, 여성 구매자는 **{female_percentage:.1f}%** 를 차지합니다. 📊")
+    st.sidebar.markdown("---")
 
-def analyze_payment_counts(data):
-    st.subheader("선호 결제 방식별 구매 건수 분석")
-    payment_counts = data['Preferred Payment Method'].value_counts()
-    fig_payment = px.bar(x=payment_counts.index, y=payment_counts.values,
-                          labels={'x': '결제 방식', 'y': '구매 건수'},
-                          title='선호 결제 방식별 구매 건수')
-    st.plotly_chart(fig_payment, key='payment_chart')
+    # 사용자 정보 섹션
+    st.sidebar.subheader("사용자 정보")
+    col1, col2 = st.sidebar.columns([1, 3])
+    with col1:
+        st.image("image/admin.jpg", width=50)  # 프로필 이미지 예시
+    with col2:
+        st.write("사용자: 관리자")
+        st.write("부서: 데이터 분석팀")
 
-def analyze_age_counts(data):
-    st.subheader("연령대별 구매 건수 분석")
-    data['Age Group'] = pd.cut(data['Age'], bins=[0, 20, 30, 40, 50, 60, 100], labels=['0-20', '21-30', '31-40', '41-50', '51-60', '60+'])
-    age_counts = data['Age Group'].value_counts()
-    fig_age = px.bar(x=age_counts.index, y=age_counts.values,
-                         labels={'x': '연령대', 'y': '구매 건수'},
-                         title='연령대별 구매 건수')
-    st.plotly_chart(fig_age, key='age_chart')
+    yesterday = datetime.now() - timedelta(days=1)
+    formatted_date = yesterday.strftime("%Y-%m-%d")
+    st.sidebar.text(f"마지막 접속일: {formatted_date}")
 
-def analyze_category_amounts(data):
-    st.subheader("카테고리별 총 구매 금액 분석")
-    category_amounts = data.groupby('Category')['Purchase Amount (USD)'].sum().sort_values(ascending=False)
-    fig_category = px.bar(x=category_amounts.index, y=category_amounts.values,
-                           labels={'x': '카테고리', 'y': '총 구매 금액 (USD)'},
-                           title='카테고리별 총 구매 금액')
-    st.plotly_chart(fig_category, key='category_chart')
+    # 추가 정보
+    with st.sidebar.expander("시스템 정보"):
+        st.write("버전: v1.0.0")
+        st.write("최종 업데이트: 2025-02-06")
 
-def analyze_location_amounts(data):
-    st.subheader("위치별 총 구매 금액 분석")
-    location_amounts = data.groupby('Location')['Purchase Amount (USD)'].sum().sort_values(ascending=False)
-    fig_location = px.bar(x=location_amounts.index, y=location_amounts.values,
-                           labels={'x': '위치', 'y': '총 구매 금액 (USD)'},
-                           title='위치별 총 구매 금액')
-    st.plotly_chart(fig_location, key='location_chart')
+    st.sidebar.markdown("---")
 
-def analyze_season_amounts(data):
-    st.subheader("시즌별 총 구매 금액 분석")
-    season_amounts = data.groupby('Season')['Purchase Amount (USD)'].sum().sort_values(ascending=False)
-    fig_season = px.bar(x=season_amounts.index, y=season_amounts.values,
-                           labels={'x': '시즌', 'y': '총 구매 금액 (USD)'},
-                           title='시즌별 총 구매 금액')
-    st.plotly_chart(fig_season, key='season_chart')
+    st.sidebar.info('고객센터 : 031-xxx-xxxx')
 
-def analyze_item_amounts(data):
-    st.subheader("상품별 총 구매 금액 분석 (상위 10개)")
-    item_amounts = data.groupby('Item Purchased')['Purchase Amount (USD)'].sum().sort_values(ascending=False).head(10)
-    fig_item = px.bar(x=item_amounts.index, y=item_amounts.values,
-                           labels={'x': '상품', 'y': '총 구매 금액 (USD)'},
-                           title='상품별 총 구매 금액 (상위 10개)')
-    st.plotly_chart(fig_item, key='item_chart')
+    return choice
 
-def analyze_season_category(data):
-    st.subheader("계절별 카테고리 구매 패턴 분석")
-    filtered_data = data[data['Season'].isin(['Spring', 'Summer', 'Fall', 'Winter']) & data['Category'].isin(['Clothing', 'Accessories', 'Footwear', 'Outerwear'])]
-    season_category = pd.crosstab(filtered_data['Season'], filtered_data['Category'])
-    season_order = ['Spring', 'Summer', 'Fall', 'Winter']
-    season_category = season_category.reindex(season_order)
-    fig_season_category = px.bar(season_category, x=season_category.index, y=season_category.columns, labels={'value': '구매 횟수', 'index': '계절', 'columns': '카테고리'})
-    fig_season_category.update_layout(barmode='stack', xaxis_title='계절', yaxis_title='구매 횟수')
-    st.plotly_chart(fig_season_category, key='season_category_chart')
+def data_analysis_page():
+    data = load_data()
+    if data is None:
+        st.error("데이터를 불러오는 데 실패했습니다.")
+        return
 
-def analyze_age_avg(data):
-    st.subheader("연령대별 평균 구매 금액 분석")
-    data['Age Group'] = pd.cut(data['Age'], bins=[0, 20, 30, 40, 50, 60, 100], labels=['0-20', '21-30', '31-40', '41-50', '51-60', '60+'])
-    age_avg = data.groupby('Age Group')['Purchase Amount (USD)'].mean().sort_index()
-    fig_age = px.bar(x=age_avg.index, y=age_avg.values,
-                         labels={'x': '연령대', 'y': '평균 구매 금액 (USD)'},
-                         title='연령대별 평균 구매 금액')
-    st.plotly_chart(fig_age, key='age_avg_chart')
+    tab1, tab2, tab3 = st.tabs([
+        f"📊 고객 분석",
+        f"📈 매출 분석",
+        f"👨‍👩‍👧‍👦 클러스터 분석"
+    ])
+    
+    with tab1:
+        st.subheader("고객 분석")
+        st.markdown(
+            """
+            <div style="background-color:#f0f2f6;padding:10px;border-radius:5px;">
+            <span style="font-weight:bold;color:#262730;">🎯 목표:</span> 고객 데이터를 다각도로 분석하여 <span style="color:#e44d26;">타겟 고객</span>을 설정하고, <span style="color:#e44d26;">개인화된 마케팅 전략</span>을 수립합니다.
+            <br>
+            <span style="font-weight:bold;color:#262730;">✨ 주요 분석 내용:</span> 성별, 연령대, 구매 이력 등을 분석하여 고객 특성을 파악합니다.
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+        analyze_gender_counts(data)
+        analyze_payment_counts(data)
+        analyze_age_counts(data)
+        analyze_age_avg(data)
+    
+    with tab2:
+        st.subheader("매출 분석")
+        st.markdown(
+            """
+            <div style="background-color:#f0f2f6;padding:10px;border-radius:5px;">
+            <span style="font-weight:bold;color:#262730;">📈 목표:</span> 매출 데이터를 분석하여 <span style="color:#e44d26;">매출 트렌드</span>를 파악하고, <span style="color:#e44d26;">수익 증대</span>를 위한 의사 결정을 지원합니다.
+            <br>
+            <span style="font-weight:bold;color:#262730;">📊 주요 분석 내용:</span> 카테고리별, 위치별, 시즌별 매출액 등을 분석하여 매출 현황을 파악합니다.
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+        analyze_category_amounts(data)
+        analyze_location_amounts(data)
+        analyze_season_amounts(data)
+        analyze_item_amounts(data)
+        analyze_season_category(data)
+    
+    with tab3:
+        st.subheader("클러스터 분석")
+        st.markdown(
+            """
+            <div style="background-color:#f0f2f6;padding:10px;border-radius:5px;">
+            <span style="font-weight:bold;color:#262730;">👨‍👩‍👧‍👦 목표:</span> 고객을 <span style="color:#e44d26;">유사한 그룹</span>으로 나누어 각 클러스터의 특징을 분석하고, <span style="color:#e44d26;">맞춤형 서비스</span>를 제공합니다.
+            <br>
+            <span style="font-weight:bold;color:#262730;">🔑 주요 분석 내용:</span> 클러스터별 구매 패턴, 리뷰 평점 등을 분석하여 클러스터 특성을 파악합니다.
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+        analyze_cluster_purchase(data)
+        analyze_cluster_rating(data)
+        analyze_cluster_sales(data)
+        analyze_cluster_age_distribution(data)
 
-def analyze_cluster_purchase(data):
-    st.subheader("클러스터별(고객유형별) 평균 구매 금액 분석")
-    if "Cluster" in data.columns:
-        show_customer_types(data)
-        avg_purchase = data.groupby('Cluster')['Purchase Amount (USD)'].mean().sort_index()
-        x_labels = [f"{i} ({get_customer_type_name(i)})" for i in avg_purchase.index]
-        fig = px.bar(x=x_labels, y=avg_purchase.values,
-                     labels={'x': '클러스터(고객유형)', 'y': '평균 구매 금액 (USD)'},
-                     title='클러스터(고객유형)별 평균 구매 금액')
-        st.plotly_chart(fig, key='cluster_purchase_chart')
+def main():
+    choice = sidebar()
 
-def analyze_cluster_rating(data):
-    st.subheader("클러스터별(고객유형별) 평균 리뷰 평점 분석")
-    if "Cluster" in data.columns:
-        avg_rating = data.groupby('Cluster')['Review Rating'].mean().sort_index()
-        x_labels = [f"{i} ({get_customer_type_name(i)})" for i in avg_rating.index]
-        fig = px.bar(x=x_labels, y=avg_rating.values,
-                     labels={'x': '클러스터(고객유형)', 'y': '평균 리뷰 평점'},
-                     title='클러스터(고객유형)별 평균 리뷰 평점')
-        st.plotly_chart(fig, key='cluster_rating_chart')
+    if choice == "🏠 홈":
+        home_page()
+    elif choice == "📖 앱 소개":
+        app_description()
+    elif choice == "🎯 고객 유형 예측":
+        predict_new_customer()
+    elif choice == "📊 데이터 분석":
+        data_analysis_page()
 
-def analyze_cluster_sales(data):
-    st.subheader("클러스터별(고객유형별) 총 매출액")
-    if "Cluster" in data.columns:
-        sales = data.groupby('Cluster')['Purchase Amount (USD)'].sum().sort_index()
-        x_labels = [f"{i} ({get_customer_type_name(i)})" for i in sales.index]
-        fig = px.bar(x=x_labels, y=sales.values,
-                     labels={'x': '클러스터(고객유형)', 'y': '총 구매 금액 (USD)'},
-                     title='클러스터(고객유형)별 총 매출액')
-        st.plotly_chart(fig, key='cluster_sales_chart')
-
-def analyze_cluster_age_distribution(data):
-    st.subheader("클러스터별(고객유형별) 연령 분포")
-    if "Cluster" in data.columns:
-        age_groups = [0, 20, 30, 40, 50, 60, 100]
-        age_labels = ['0-20', '21-30', '31-40', '41-50', '51-60', '60+']
-        data['Age Group'] = pd.cut(data['Age'], bins=age_groups, labels=age_labels, right=False)
-        cluster_age = data.groupby(['Cluster', 'Age Group']).size().unstack(fill_value=0)
-        cluster_age.index = [f"{i} ({get_customer_type_name(i)})" for i in cluster_age.index]
-        fig = px.bar(cluster_age, x=cluster_age.index, y=cluster_age.columns,
-                     labels={'value': '고객 수', 'x': '클러스터(고객유형)', 'columns': '연령대'},
-                     title='클러스터(고객유형)별 연령 분포')
-        fig.update_layout(barmode='stack')
-        st.plotly_chart(fig, key='cluster_age_chart')
+if __name__ == '__main__':
+    main()
